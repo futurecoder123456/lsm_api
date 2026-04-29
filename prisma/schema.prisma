@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Book {
+  bookId          Int      @id @default(autoincrement()) @map("book_id")
+  title           String
+  author          String
+  publishDate     DateTime @map("publish_date")
+  pageAmount      Int      @map("page_amount")
+  conditionReport String   @map("condition_report")
+  timesLoaned     Int      @map("times_loaned")
+
+  reviews Review[]
+  loans   Loan[]
+}
+
+model User {
+  userId  Int      @id @default(autoincrement()) @map("user_id")
+  name        String   @db.VarChar(50) @map("name")
+  email       String   @unique @db.VarChar(100) @map("email")
+  password    String   @db.VarChar(255) @map("password")
+  role        String   @default("USER") @map("role")
+  dateJoined  DateTime @map("date_joined")
+  userDob DateTime @map("user_dob")
+  feesPaid    Float    @map("fees_paid")
+  booksLoaned Int      @map("books_loaned")
+
+  reviews Review[]
+  loans   Loan[]
+}
+
+model Review {
+  reviewId   Int      @id @default(autoincrement()) @map("review_id")
+  userId Int      @map("user_id")
+  bookId     Int      @map("book_id")
+  rating     Int
+  reviewText String   @map("review_text")
+  createdAt  DateTime @map("created_at")
+  updatedAt  DateTime @map("updated_at")
+
+  user User @relation(fields: [userId], references: [userId])
+  book     Book     @relation(fields: [bookId], references: [bookId])
+}
+
+model Loan {
+  loanId     Int      @id @default(autoincrement()) @map("loan_id")
+  userId Int      @map("user_id")
+  bookId     Int      @map("book_id")
+  loanDate   DateTime @map("loan_date")
+  dueDate    DateTime @map("due_date")
+  returnDate DateTime? @map("return_date")
+  penaltyFee Float?   @map("penalty_fee")
+
+  user User @relation(fields: [userId], references: [userId])
+  book     Book     @relation(fields: [bookId], references: [bookId])
+}
