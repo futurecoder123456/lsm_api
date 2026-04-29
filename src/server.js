@@ -3,6 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import cors from 'cors';
 
 import bookRoutes from '../src/routes/bookRoutes.js';
 import userRoutes from '../src/routes/userRoutes.js';
@@ -17,6 +18,8 @@ const swaggerDoc = YAML.load('./src/docs/openapi.yaml');
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use(cors({
+  origin: '*'}));
 
 // Root Route
 app.get('/', (req, res) => {
