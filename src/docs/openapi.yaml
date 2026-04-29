@@ -280,3 +280,12 @@ paths:
                   status:
                     type: string
                     example: ok
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
